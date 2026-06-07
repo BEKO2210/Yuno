@@ -30,9 +30,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (NIEMALS echte Keys committen) — .env.example ist die Ausnahme (nur Platzhalter)
+# env files (NIEMALS echte/geheime Keys committen)
+# Ausnahmen: .env.example (Platzhalter) und .env.production (nur ÖFFENTLICHE NEXT_PUBLIC-Werte)
 .env*
 !.env.example
+!.env.production
 
 # editor
 .vscode/
