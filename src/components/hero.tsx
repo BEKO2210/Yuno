@@ -3,6 +3,8 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { VideoBackground } from "@/components/video-background";
+import { YunoLogo } from "@/components/yuno-logo";
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -12,33 +14,31 @@ export function Hero() {
   });
 
   // cinematic parallax: content drifts up & fades as you scroll
-  const y = useTransform(scrollYProgress, [0, 1], [0, 160]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, 180]);
+  const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
 
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[92vh] items-center justify-center overflow-hidden px-5"
+      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden px-5"
     >
-      {/* animated glow orbs */}
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute -top-40 left-1/2 h-[42rem] w-[42rem] -translate-x-1/2 rounded-full blur-3xl"
-        style={{ background: "radial-gradient(circle, var(--glow), transparent 60%)", scale }}
-        animate={{ opacity: [0.5, 0.8, 0.5] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      <VideoBackground
+        src="/video/hero.mp4"
+        poster="/video/hero.jpg"
+        parallax={140}
+        opacity={0.7}
+        overlay={0.5}
       />
 
       <motion.div style={{ y, opacity }} className="relative z-10 max-w-3xl text-center">
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-5 inline-block rounded-full border border-border px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-muted"
+          transition={{ duration: 0.7 }}
+          className="mb-8 flex justify-center"
         >
-          Free · Open Source
-        </motion.p>
+          <YunoLogo size={76} withWordmark={false} animated />
+        </motion.div>
 
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -74,7 +74,7 @@ export function Hero() {
           </Link>
           <Link
             href="/ringtones"
-            className="rounded-full border border-border px-7 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface"
+            className="rounded-full border border-white/20 bg-white/5 px-7 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-white/10"
           >
             Explore sounds
           </Link>
@@ -84,7 +84,7 @@ export function Hero() {
       {/* scroll hint */}
       <motion.div
         aria-hidden
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-xs uppercase tracking-[0.3em] text-muted"
+        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-xs uppercase tracking-[0.3em] text-muted"
         animate={{ opacity: [0.3, 1, 0.3], y: [0, 6, 0] }}
         transition={{ duration: 2.2, repeat: Infinity }}
       >

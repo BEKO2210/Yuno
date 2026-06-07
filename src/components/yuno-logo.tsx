@@ -1,74 +1,62 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
+import logoMark from "../../public/brand/logo-mark.webp";
 
 type Props = {
   /** size of the mark in px */
   size?: number;
   withWordmark?: boolean;
   className?: string;
+  /** gentle continuous glow pulse (use on the hero, not in the header) */
+  animated?: boolean;
 };
 
 /**
- * Animated Yuno logo.
- * A glowing "Y" mark that draws itself in, paired with the wordmark.
+ * Yuno logo: the AI-generated glowing "Y" mark + wordmark.
+ * The mark sits on pure black, so `mix-blend-mode: screen` drops the black
+ * and leaves only the glow on our dark background.
  */
-export function YunoLogo({ size = 32, withWordmark = true, className }: Props) {
+export function YunoLogo({
+  size = 32,
+  withWordmark = true,
+  className,
+  animated = false,
+}: Props) {
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className ?? ""}`}>
-      <motion.svg
-        width={size}
-        height={size}
-        viewBox="0 0 48 48"
-        fill="none"
-        initial="hidden"
-        animate="visible"
-        aria-hidden="true"
+    <span className={`inline-flex items-center gap-2 ${className ?? ""}`}>
+      <motion.span
+        className="relative inline-block shrink-0 mix-blend-screen"
+        style={{ width: size, height: size }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={
+          animated
+            ? { opacity: 1, scale: 1, filter: ["brightness(1)", "brightness(1.18)", "brightness(1)"] }
+            : { opacity: 1, scale: 1 }
+        }
+        transition={
+          animated
+            ? { opacity: { duration: 0.6 }, scale: { duration: 0.6 }, filter: { duration: 4, repeat: Infinity, ease: "easeInOut" } }
+            : { duration: 0.5 }
+        }
       >
-        <defs>
-          <linearGradient id="yuno-grad" x1="0" y1="0" x2="48" y2="48">
-            <stop offset="0%" stopColor="var(--accent)" />
-            <stop offset="100%" stopColor="var(--accent-2)" />
-          </linearGradient>
-        </defs>
-        {/* soft circle backing */}
-        <motion.circle
-          cx="24"
-          cy="24"
-          r="22"
-          stroke="url(#yuno-grad)"
-          strokeOpacity="0.35"
-          strokeWidth="1.5"
-          variants={{
-            hidden: { scale: 0.6, opacity: 0 },
-            visible: { scale: 1, opacity: 1, transition: { duration: 0.6, ease: "easeOut" } },
-          }}
-          style={{ transformOrigin: "center" }}
+        <Image
+          src={logoMark}
+          alt="Yuno"
+          fill
+          sizes={`${size}px`}
+          priority
+          className="object-contain"
         />
-        {/* the Y, drawn in */}
-        <motion.path
-          d="M16 15 L24 26 L32 15 M24 26 L24 34"
-          stroke="url(#yuno-grad)"
-          strokeWidth="3.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          variants={{
-            hidden: { pathLength: 0, opacity: 0 },
-            visible: {
-              pathLength: 1,
-              opacity: 1,
-              transition: { duration: 1, ease: "easeInOut", delay: 0.2 },
-            },
-          }}
-        />
-      </motion.svg>
+      </motion.span>
 
       {withWordmark && (
         <motion.span
           className="text-xl font-semibold tracking-tight"
           initial={{ opacity: 0, x: -6 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
         >
           Yuno
         </motion.span>
