@@ -30,8 +30,13 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files (NIEMALS echte Keys committen) — .env.example ist die Ausnahme (nur Platzhalter)
 .env*
+!.env.example
+
+# editor
+.vscode/
+.idea/
 
 # vercel
 .vercel
@@ -39,3 +44,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code local settings (personal)
+.claude/

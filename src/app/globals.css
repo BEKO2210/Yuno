@@ -1,26 +1,75 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Yuno — Design Tokens (dark & cinematic)
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #060608;
+  --surface: #0d0d12;
+  --surface-2: #14141b;
+  --foreground: #f4f4f6;
+  --muted: #9b9ba7;
+  --border: #ffffff14;
+
+  /* Glow / Akzent (cinematic) */
+  --accent: #7c5cff;
+  --accent-2: #18d2c4;
+  --glow: #7c5cff66;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Cinematic background glow */
+.bg-cinematic {
+  background:
+    radial-gradient(60% 50% at 50% 0%, var(--glow) 0%, transparent 70%),
+    radial-gradient(40% 40% at 100% 100%, #18d2c422 0%, transparent 60%),
+    var(--background);
+}
+
+.text-gradient {
+  background: linear-gradient(120deg, var(--foreground) 30%, var(--accent) 70%, var(--accent-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Respektiere Nutzer, die weniger Bewegung wollen */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

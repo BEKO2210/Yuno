@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Yuno
 
-## Getting Started
+A free, **open-source** library of **wallpapers, ringtones and notification
+sounds** — browse, preview and download, no paywalls. Built and maintained by
+**Belkis Aslani**.
 
-First, run the development server:
+## Tech stack
+
+- **Next.js (App Router) + React + TypeScript**
+- **Tailwind CSS v4**
+- **Framer Motion** — cinematic scroll animations
+- **Supabase** — Auth, Postgres, Storage (file uploads)
+- **Vercel** — hosting
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # then fill in your real keys
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Supabase setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Create a project at [supabase.com](https://supabase.com).
+2. Open **SQL Editor** and run [`supabase/schema.sql`](./supabase/schema.sql).
+   This creates the `assets` table, the `wallpapers` + `audio` storage buckets,
+   and the access rules (public read, admin-only write).
+3. Copy your project URL + keys into `.env.local` (see `.env.example`).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment variables
 
-## Learn More
+See [`.env.example`](./.env.example). **Never commit real keys** — `.env.local`
+is gitignored.
 
-To learn more about Next.js, take a look at the following resources:
+## Project structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+  app/            # routes: /, /wallpapers, /ringtones, /notifications, /admin
+  components/     # logo, header, footer, hero, grids
+  lib/
+    supabase/     # browser + server clients
+    types.ts      # Asset model
+supabase/
+  schema.sql      # database + storage setup
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open source. License to be added.
