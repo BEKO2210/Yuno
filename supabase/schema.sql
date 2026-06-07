@@ -1,6 +1,7 @@
 -- ============================================================
--- Yuno — Supabase Schema
--- In Supabase: SQL Editor → paste & run.
+-- Yuno — Supabase Schema (source of truth)
+-- Already applied to the live project. Re-runnable on a fresh project:
+-- Supabase → SQL Editor → paste & run.
 -- ============================================================
 
 -- 1) Assets table -------------------------------------------------
@@ -21,32 +22,39 @@ create table if not exists public.assets (
 create index if not exists assets_kind_idx on public.assets (kind);
 create index if not exists assets_created_idx on public.assets (created_at desc);
 
--- 2) Row Level Security ------------------------------------------
+-- 2) Admin check --------------------------------------------------
+-- Only this account may write. Extend later to an `admins` table if needed.
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+set search_path = ''
+as $$
+  select coalesce(auth.jwt() ->> 'email', '') = 'belkis.aslani@gmail.com'
+$$;
+
+-- 3) Row Level Security on assets --------------------------------
 alter table public.assets enable row level security;
 
--- Anyone may read assets (public download library).
+-- Anyone may read (public download library).
 create policy "assets are public to read"
-  on public.assets for select
-  using (true);
+  on public.assets for select using (true);
 
--- Only authenticated users (the admin) may insert / update / delete.
-create policy "authenticated can insert assets"
-  on public.assets for insert
-  to authenticated
-  with check (true);
+-- Only the admin may write.
+create policy "admin can insert assets"
+  on public.assets for insert to authenticated with check (public.is_admin());
 
-create policy "authenticated can update assets"
-  on public.assets for update
-  to authenticated
-  using (true);
+create policy "admin can update assets"
+  on public.assets for update to authenticated
+  using (public.is_admin()) with check (public.is_admin());
 
-create policy "authenticated can delete assets"
-  on public.assets for delete
-  to authenticated
-  using (true);
+create policy "admin can delete assets"
+  on public.assets for delete to authenticated using (public.is_admin());
 
--- 3) Storage buckets ---------------------------------------------
--- Public buckets so files can be downloaded directly.
+-- 4) Storage buckets ---------------------------------------------
+-- Public buckets: files are served via public object URLs.
+-- (No broad SELECT policy on storage.objects — public URLs don't need it,
+--  and it would let clients list every file.)
 insert into storage.buckets (id, name, public)
 values ('wallpapers', 'wallpapers', true)
 on conflict (id) do nothing;
@@ -55,32 +63,15 @@ insert into storage.buckets (id, name, public)
 values ('audio', 'audio', true)
 on conflict (id) do nothing;
 
--- Public read for both buckets.
-create policy "public read wallpapers"
-  on storage.objects for select
-  using (bucket_id = 'wallpapers');
+-- Only the admin may upload / modify / delete files.
+create policy "admin write storage"
+  on storage.objects for insert to authenticated
+  with check (bucket_id in ('wallpapers', 'audio') and public.is_admin());
 
-create policy "public read audio"
-  on storage.objects for select
-  using (bucket_id = 'audio');
+create policy "admin update storage"
+  on storage.objects for update to authenticated
+  using (bucket_id in ('wallpapers', 'audio') and public.is_admin());
 
--- Only authenticated users may upload / modify / delete files.
-create policy "authenticated write wallpapers"
-  on storage.objects for insert
-  to authenticated
-  with check (bucket_id = 'wallpapers');
-
-create policy "authenticated write audio"
-  on storage.objects for insert
-  to authenticated
-  with check (bucket_id = 'audio');
-
-create policy "authenticated update storage"
-  on storage.objects for update
-  to authenticated
-  using (bucket_id in ('wallpapers', 'audio'));
-
-create policy "authenticated delete storage"
-  on storage.objects for delete
-  to authenticated
-  using (bucket_id in ('wallpapers', 'audio'));
+create policy "admin delete storage"
+  on storage.objects for delete to authenticated
+  using (bucket_id in ('wallpapers', 'audio') and public.is_admin());

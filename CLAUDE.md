@@ -125,6 +125,27 @@ Drag-&-Drop-Upload**.
 
 - [ ] Google-API-Key widerrufen & neu erstellen (kompromittiert).
 - [ ] Endgültige Farbpalette & Logo-Konzept festlegen (Standard: dark & cinematic).
-- [ ] Next.js-Projekt initialisieren (Scaffold).
-- [ ] Supabase-Projekt anlegen (Buckets + Tabellen + Auth).
+- [x] Next.js-Projekt initialisieren (Scaffold). ✅
+- [x] Supabase-Projekt anlegen (Buckets + Tabellen + RLS). ✅
+- [x] Repo nach github.com/BEKO2210/Yuno pushen. ✅
+- [ ] Admin-Login (Supabase Auth) + Upload-Formular bauen.
+- [ ] Galerie/Listen aus Supabase laden (statt Platzhalter).
+- [ ] Logo/Visuals mit Higgsfield generieren.
+- [ ] Auf Vercel deployen (Env-Variablen dort eintragen).
 - [ ] Domain-Name prüfen (z. B. yuno.\* — Verfügbarkeit checken).
+
+## 9. Supabase-Projekt (Live)
+
+- **Projekt:** `yuno` · Region `eu-central-1` (Frankfurt) · Org „Belkis"
+- **Project Ref / ID:** `tzwcnjvciykvusunxzzl`
+- **API-URL:** `https://tzwcnjvciykvusunxzzl.supabase.co`
+- **Tabellen:** `public.assets` (Wallpaper/Audio-Metadaten)
+- **Storage-Buckets:** `wallpapers`, `audio` (public read via URL)
+- **Schreibrechte:** nur Admin (E-Mail `belkis.aslani@gmail.com`) via
+  `public.is_admin()` — siehe `supabase/schema.sql`.
+- Keys liegen lokal in `.env.local` (nicht in Git). Für das Deployment müssen
+  sie zusätzlich in den Vercel-Projekt-Einstellungen hinterlegt werden.
+
+> **Admin-Login einrichten:** In Supabase unter **Authentication → Users** einen
+> Nutzer mit deiner E-Mail anlegen (oder per Magic-Link einloggen, sobald das
+> Login-Formular steht). Nur dieser Account darf hochladen.
