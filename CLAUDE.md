@@ -128,11 +128,22 @@ Drag-&-Drop-Upload**.
 - [x] Next.js-Projekt initialisieren (Scaffold). ✅
 - [x] Supabase-Projekt anlegen (Buckets + Tabellen + RLS). ✅
 - [x] Repo nach github.com/BEKO2210/Yuno pushen. ✅
-- [ ] Admin-Login (Supabase Auth) + Upload-Formular bauen.
+- [x] Admin-Login (Supabase Auth, Magic-Link) + Upload-Formular. ✅
+- [x] Logo/Visuals + Scroll-Videos mit Higgsfield generiert. ✅
+- [x] Auf Vercel deployt + GitHub-Auto-Deploy verbunden. ✅
+- [ ] **Supabase Auth URLs** auf Production-URL setzen (sonst Login online kaputt) — Dashboard-Schritt.
 - [ ] Galerie/Listen aus Supabase laden (statt Platzhalter).
-- [ ] Logo/Visuals mit Higgsfield generieren.
-- [ ] Auf Vercel deployen (Env-Variablen dort eintragen).
-- [ ] Domain-Name prüfen (z. B. yuno.\* — Verfügbarkeit checken).
+- [ ] Eigene Domain (z. B. yuno.\*) prüfen & in Vercel hinterlegen.
+
+## 10. Deployment (Live)
+
+- **Production:** https://yuno-liard.vercel.app
+- **Vercel-Projekt:** `yuno` (Scope `belkisaslani-7904`), mit GitHub `BEKO2210/Yuno`
+  verbunden → **jeder `git push` auf `main` deployt automatisch**.
+- **Öffentliche Build-Env** liegt in `.env.production` (committet, NEXT_PUBLIC nur).
+- **Manueller Schritt für Online-Login:** In Supabase → Authentication → URL
+  Configuration: **Site URL** = `https://yuno-liard.vercel.app`, und unter
+  **Redirect URLs** `https://yuno-liard.vercel.app/**` hinzufügen.
 
 ## 9. Supabase-Projekt (Live)
 
