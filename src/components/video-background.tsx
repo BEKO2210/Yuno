@@ -69,18 +69,25 @@ export function VideoBackground({
         )}
       </motion.div>
 
-      {/* legibility overlay: darken + brand tint + vignette */}
+      {/* Edge-fade to the page background so stacked video sections blend
+          seamlessly into one another (soft transitions, no hard cuts). */}
       <div
         className="absolute inset-0"
         style={{
-          background: `linear-gradient(to bottom, rgba(6,6,8,${overlay * 0.9}) 0%, rgba(6,6,8,${overlay * 0.4}) 45%, rgba(6,6,8,${overlay}) 100%)`,
+          background: `linear-gradient(to bottom,
+            var(--background) 0%,
+            rgba(6,6,8,${overlay * 0.55}) 16%,
+            rgba(6,6,8,${overlay * 0.3}) 50%,
+            rgba(6,6,8,${overlay * 0.55}) 84%,
+            var(--background) 100%)`,
         }}
       />
+      {/* subtle cinematic vignette */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(120% 80% at 50% 0%, transparent 40%, rgba(6,6,8,0.85) 100%)",
+            "radial-gradient(130% 90% at 50% 50%, transparent 55%, rgba(6,6,8,0.6) 100%)",
         }}
       />
     </div>

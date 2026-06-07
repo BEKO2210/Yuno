@@ -1,26 +1,37 @@
 "use client";
 
 import Link from "next/link";
+import Image, { type StaticImageData } from "next/image";
 import { motion } from "framer-motion";
+import wallpaperImg from "../../public/brand/cat-wallpaper.webp";
+import ringtoneImg from "../../public/brand/cat-ringtone.webp";
+import notificationImg from "../../public/brand/cat-notification.webp";
 
-const categories = [
+type Category = {
+  href: string;
+  title: string;
+  desc: string;
+  image: StaticImageData;
+};
+
+const categories: Category[] = [
   {
     href: "/wallpapers",
     title: "Wallpapers",
     desc: "Crisp, high-resolution backgrounds for phone and desktop.",
-    accent: "var(--accent)",
+    image: wallpaperImg,
   },
   {
     href: "/ringtones",
     title: "Ringtones",
     desc: "Stand-out ringtones, from cinematic to minimal.",
-    accent: "var(--accent-2)",
+    image: ringtoneImg,
   },
   {
     href: "/notifications",
     title: "Notifications",
     desc: "Short, clean notification sounds that don't annoy.",
-    accent: "#ff7ac6",
+    image: notificationImg,
   },
 ];
 
@@ -48,13 +59,21 @@ export function CategoryGrid() {
           >
             <Link
               href={cat.href}
-              className="group relative block h-64 overflow-hidden rounded-2xl border border-border bg-surface p-6"
+              className="group relative block h-72 overflow-hidden rounded-2xl border border-border"
             >
-              <div
-                className="absolute -right-16 -top-16 h-48 w-48 rounded-full opacity-30 blur-2xl transition-opacity duration-500 group-hover:opacity-60"
-                style={{ background: cat.accent }}
+              {/* example image */}
+              <Image
+                src={cat.image}
+                alt={`${cat.title} example`}
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                placeholder="blur"
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               />
-              <div className="relative flex h-full flex-col justify-end">
+              {/* legibility gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+
+              <div className="relative flex h-full flex-col justify-end p-6">
                 <h3 className="text-2xl font-semibold">{cat.title}</h3>
                 <p className="mt-2 max-w-xs text-sm text-muted">{cat.desc}</p>
                 <span className="mt-4 text-sm text-muted transition-colors group-hover:text-foreground">
