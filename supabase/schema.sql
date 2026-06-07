@@ -75,3 +75,20 @@ create policy "admin update storage"
 create policy "admin delete storage"
   on storage.objects for delete to authenticated
   using (bucket_id in ('wallpapers', 'audio') and public.is_admin());
+
+-- 5) Public download counter -------------------------------------
+-- Lets anonymous visitors bump download_count without write access to assets
+-- (SECURITY DEFINER bypasses RLS safely; only this single column update).
+create or replace function public.increment_download(asset_id uuid)
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  update public.assets
+     set download_count = download_count + 1
+   where id = asset_id;
+$$;
+
+revoke all on function public.increment_download(uuid) from public;
+grant execute on function public.increment_download(uuid) to anon, authenticated;

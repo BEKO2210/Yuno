@@ -18,7 +18,9 @@ export const metadata: Metadata = {
   title: "Yuno — Free Wallpapers, Ringtones & Notification Sounds",
   description:
     "Yuno is a free, open-source library of wallpapers, ringtones and notification sounds. Browse, preview and download — no strings attached.",
-  metadataBase: new URL("https://yuno.app"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://yuno-liard.vercel.app",
+  ),
   openGraph: {
     title: "Yuno — Free Wallpapers, Ringtones & Notification Sounds",
     description:

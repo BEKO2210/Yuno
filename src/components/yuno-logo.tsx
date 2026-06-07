@@ -15,8 +15,8 @@ type Props = {
 
 /**
  * Yuno logo: the AI-generated glowing "Y" mark + wordmark.
- * The mark sits on pure black, so `mix-blend-mode: screen` drops the black
- * and leaves only the glow on our dark background.
+ * The mark is a free-standing transparent PNG/WebP (alpha baked from the
+ * glow), so it sits cleanly on any background — no blend tricks needed.
  */
 export function YunoLogo({
   size = 32,
@@ -27,7 +27,7 @@ export function YunoLogo({
   return (
     <span className={`inline-flex items-center gap-2 ${className ?? ""}`}>
       <motion.span
-        className="relative inline-block shrink-0 mix-blend-screen"
+        className="relative inline-block shrink-0"
         style={{ width: size, height: size }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={

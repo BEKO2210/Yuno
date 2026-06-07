@@ -19,9 +19,14 @@ const KINDS: AssetKind[] = ["wallpaper", "ringtone", "notification"];
 function imageSize(file: File): Promise<{ width: number; height: number }> {
   return new Promise((resolve) => {
     const img = new Image();
-    img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
-    img.onerror = () => resolve({ width: 0, height: 0 });
-    img.src = URL.createObjectURL(file);
+    const url = URL.createObjectURL(file);
+    const done = (w: number, h: number) => {
+      URL.revokeObjectURL(url);
+      resolve({ width: w, height: h });
+    };
+    img.onload = () => done(img.naturalWidth, img.naturalHeight);
+    img.onerror = () => done(0, 0);
+    img.src = url;
   });
 }
 
@@ -30,10 +35,21 @@ function audioDuration(file: File): Promise<number> {
   return new Promise((resolve) => {
     const a = document.createElement("audio");
     a.preload = "metadata";
-    a.onloadedmetadata = () => resolve(Math.round(a.duration));
-    a.onerror = () => resolve(0);
-    a.src = URL.createObjectURL(file);
+    const url = URL.createObjectURL(file);
+    const done = (d: number) => {
+      URL.revokeObjectURL(url);
+      resolve(d);
+    };
+    a.onloadedmetadata = () => done(Math.round(a.duration));
+    a.onerror = () => done(0);
+    a.src = url;
   });
+}
+
+/** Keep only files whose MIME type matches the selected kind. */
+function filterByKind(list: File[], kind: AssetKind): File[] {
+  const prefix = kind === "wallpaper" ? "image/" : "audio/";
+  return list.filter((f) => f.type.startsWith(prefix));
 }
 
 export function AdminDashboard({ initialAssets }: { initialAssets: Asset[] }) {
@@ -50,11 +66,30 @@ export function AdminDashboard({ initialAssets }: { initialAssets: Asset[] }) {
   const [assets, setAssets] = useState<Asset[]>(initialAssets);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const onDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setDragging(false);
-    setFiles(Array.from(e.dataTransfer.files));
-  }, []);
+  function resetFiles() {
+    setFiles([]);
+    if (inputRef.current) inputRef.current.value = "";
+  }
+
+  const onDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setDragging(false);
+      const dropped = Array.from(e.dataTransfer.files);
+      const valid = filterByKind(dropped, kind);
+      if (valid.length < dropped.length) {
+        setError(
+          `Skipped ${dropped.length - valid.length} file(s) that aren't ${
+            kind === "wallpaper" ? "images" : "audio"
+          }.`,
+        );
+      } else {
+        setError("");
+      }
+      setFiles(valid);
+    },
+    [kind],
+  );
 
   async function refresh() {
     const { data } = await supabase
@@ -106,7 +141,7 @@ export function AdminDashboard({ initialAssets }: { initialAssets: Asset[] }) {
         if (insErr) throw insErr;
       }
 
-      setFiles([]);
+      resetFiles();
       setTags("");
       setProgress("");
       await refresh();
@@ -123,7 +158,10 @@ export function AdminDashboard({ initialAssets }: { initialAssets: Asset[] }) {
     if (!confirm(`Delete "${asset.title}"?`)) return;
     setError("");
     try {
-      await supabase.storage.from(bucketFor(asset.kind)).remove([asset.file_path]);
+      const { error: rmErr } = await supabase.storage
+        .from(bucketFor(asset.kind))
+        .remove([asset.file_path]);
+      if (rmErr) throw rmErr;
       const { error: delErr } = await supabase.from("assets").delete().eq("id", asset.id);
       if (delErr) throw delErr;
       setAssets((prev) => prev.filter((a) => a.id !== asset.id));
@@ -153,7 +191,8 @@ export function AdminDashboard({ initialAssets }: { initialAssets: Asset[] }) {
               key={k}
               onClick={() => {
                 setKind(k);
-                setFiles([]);
+                resetFiles();
+                setError("");
               }}
               className={`rounded-full px-4 py-1.5 text-sm transition-colors ${
                 kind === k
@@ -168,6 +207,9 @@ export function AdminDashboard({ initialAssets }: { initialAssets: Asset[] }) {
 
         {/* dropzone */}
         <div
+          role="button"
+          tabIndex={0}
+          aria-label={`Choose ${KIND_LABELS[kind].toLowerCase()} files to upload`}
           onDragOver={(e) => {
             e.preventDefault();
             setDragging(true);
@@ -175,7 +217,13 @@ export function AdminDashboard({ initialAssets }: { initialAssets: Asset[] }) {
           onDragLeave={() => setDragging(false)}
           onDrop={onDrop}
           onClick={() => inputRef.current?.click()}
-          className={`mt-5 flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 text-center transition-colors ${
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              inputRef.current?.click();
+            }
+          }}
+          className={`mt-5 flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 text-center transition-colors focus:outline-none focus-visible:border-accent ${
             dragging ? "border-accent bg-accent/5" : "border-border hover:border-muted"
           }`}
         >
@@ -185,7 +233,9 @@ export function AdminDashboard({ initialAssets }: { initialAssets: Asset[] }) {
             multiple
             accept={acceptFor(kind)}
             className="hidden"
-            onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+            onChange={(e) =>
+              setFiles(filterByKind(Array.from(e.target.files ?? []), kind))
+            }
           />
           {files.length ? (
             <div className="text-sm">
