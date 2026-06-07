@@ -132,8 +132,9 @@ Drag-&-Drop-Upload**.
 - [x] Logo/Visuals + Scroll-Videos mit Higgsfield generiert. ✅
 - [x] Auf Vercel deployt + GitHub-Auto-Deploy verbunden. ✅
 - [ ] **Supabase Auth URLs** auf Production-URL setzen (sonst Login online kaputt) — Dashboard-Schritt.
-- [ ] Galerie/Listen aus Supabase laden (statt Platzhalter).
+- [x] Galerie/Listen aus Supabase laden (Wallpaper-Grid + Sound-Player + Download). ✅
 - [ ] Eigene Domain (z. B. yuno.\*) prüfen & in Vercel hinterlegen.
+- [ ] Optional: Suche/Filter nach Tags, Sortierung (beliebt/neu).
 
 ## 10. Deployment (Live)
 

@@ -29,3 +29,32 @@ export function buildPath(kind: AssetKind, fileName: string, unique: string): st
     .replace(/^-+|-+$/g, "");
   return `${kind}/${unique}-${safe}`;
 }
+
+/** File extension (without dot) from a storage path. */
+export function fileExt(path: string): string {
+  const m = path.match(/\.([a-z0-9]+)$/i);
+  return m ? m[1].toLowerCase() : "";
+}
+
+/** A nice download filename: "<slugified title>.<ext>". */
+export function downloadName(title: string, path: string): string {
+  const ext = fileExt(path);
+  const base = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "yuno";
+  return ext ? `${base}.${ext}` : base;
+}
+
+/**
+ * Public URL that forces a download with a friendly filename.
+ * Supabase storage honours the `?download=` query param via Content-Disposition.
+ */
+export function downloadUrl(
+  supabaseUrl: string,
+  bucket: string,
+  path: string,
+  title: string,
+): string {
+  return `${publicUrl(supabaseUrl, bucket, path)}?download=${encodeURIComponent(downloadName(title, path))}`;
+}

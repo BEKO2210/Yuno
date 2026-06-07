@@ -1,14 +1,22 @@
 import { PageShell, EmptyState } from "@/components/page-shell";
+import { SoundGallery } from "@/components/gallery/sound-gallery";
+import { getAssets } from "@/lib/queries";
 
 export const metadata = { title: "Ringtones — Yuno" };
+export const dynamic = "force-dynamic";
 
-export default function RingtonesPage() {
+export default async function RingtonesPage() {
+  const assets = await getAssets("ringtone");
   return (
     <PageShell
       title="Ringtones"
       subtitle="Stand-out ringtones, from cinematic to minimal. Preview and download."
     >
-      <EmptyState label="ringtones" />
+      {assets.length === 0 ? (
+        <EmptyState label="ringtones" />
+      ) : (
+        <SoundGallery assets={assets} />
+      )}
     </PageShell>
   );
 }

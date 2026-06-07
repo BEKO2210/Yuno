@@ -1,14 +1,22 @@
 import { PageShell, EmptyState } from "@/components/page-shell";
+import { WallpaperGallery } from "@/components/gallery/wallpaper-gallery";
+import { getAssets } from "@/lib/queries";
 
 export const metadata = { title: "Wallpapers — Yuno" };
+export const dynamic = "force-dynamic";
 
-export default function WallpapersPage() {
+export default async function WallpapersPage() {
+  const assets = await getAssets("wallpaper");
   return (
     <PageShell
       title="Wallpapers"
       subtitle="High-resolution backgrounds for phone and desktop. Free to download."
     >
-      <EmptyState label="wallpapers" />
+      {assets.length === 0 ? (
+        <EmptyState label="wallpapers" />
+      ) : (
+        <WallpaperGallery assets={assets} />
+      )}
     </PageShell>
   );
 }
