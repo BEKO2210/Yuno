@@ -1,3 +1,5 @@
+"use client";
+
 import { bucketFor, downloadUrl, publicUrl } from "@/lib/assets";
 import { DownloadButton } from "@/components/download-button";
 import type { Asset } from "@/lib/types";

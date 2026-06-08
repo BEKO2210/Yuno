@@ -1,5 +1,5 @@
 import { PageShell, EmptyState } from "@/components/page-shell";
-import { WallpaperGallery } from "@/components/gallery/wallpaper-gallery";
+import { AssetBrowser } from "@/components/gallery/asset-browser";
 import { getAssets } from "@/lib/queries";
 
 export const metadata = { title: "Wallpapers — Yuno" };
@@ -15,7 +15,7 @@ export default async function WallpapersPage() {
       {assets.length === 0 ? (
         <EmptyState label="wallpapers" />
       ) : (
-        <WallpaperGallery assets={assets} />
+        <AssetBrowser assets={assets} variant="wallpaper" />
       )}
     </PageShell>
   );

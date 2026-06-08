@@ -1,5 +1,5 @@
 import { PageShell, EmptyState } from "@/components/page-shell";
-import { SoundGallery } from "@/components/gallery/sound-gallery";
+import { AssetBrowser } from "@/components/gallery/asset-browser";
 import { getAssets } from "@/lib/queries";
 
 export const metadata = { title: "Notification Sounds — Yuno" };
@@ -15,7 +15,7 @@ export default async function NotificationsPage() {
       {assets.length === 0 ? (
         <EmptyState label="notification sounds" />
       ) : (
-        <SoundGallery assets={assets} />
+        <AssetBrowser assets={assets} variant="sound" />
       )}
     </PageShell>
   );
