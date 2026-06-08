@@ -25,7 +25,7 @@ export function YunoLogo({
   animated = false,
 }: Props) {
   return (
-    <span className={`inline-flex items-center gap-2 ${className ?? ""}`}>
+    <span className={`inline-flex items-center gap-1.5 ${className ?? ""}`}>
       <motion.span
         className="relative inline-block shrink-0"
         style={{ width: size, height: size }}
@@ -53,12 +53,31 @@ export function YunoLogo({
 
       {withWordmark && (
         <motion.span
-          className="text-xl font-semibold tracking-tight"
-          initial={{ opacity: 0, x: -6 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          // The mark already *is* the "Y", so the wordmark is just "uno".
+          className="font-display text-[1.4rem] font-semibold leading-none tracking-tight"
+          style={{
+            marginLeft: "-0.04em",
+            backgroundImage:
+              "linear-gradient(90deg, var(--foreground) 0%, var(--accent) 35%, var(--accent-2) 60%, var(--foreground) 100%)",
+            backgroundSize: "220% auto",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
+            WebkitTextFillColor: "transparent",
+          }}
+          initial={{ opacity: 0, x: -4 }}
+          animate={{
+            opacity: 1,
+            x: 0,
+            backgroundPositionX: ["0%", "-220%"],
+          }}
+          transition={{
+            opacity: { duration: 0.5, delay: 0.25 },
+            x: { duration: 0.5, delay: 0.25 },
+            backgroundPositionX: { duration: 7, repeat: Infinity, ease: "linear" },
+          }}
         >
-          Yuno
+          uno
         </motion.span>
       )}
     </span>
