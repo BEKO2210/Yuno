@@ -25,7 +25,7 @@ export function YunoLogo({
   animated = false,
 }: Props) {
   return (
-    <span className={`inline-flex items-center gap-1.5 ${className ?? ""}`}>
+    <span className={`inline-flex items-center gap-0.5 ${className ?? ""}`}>
       <motion.span
         className="relative inline-block shrink-0"
         style={{ width: size, height: size }}

@@ -20,7 +20,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/60 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5">
         <Link href="/" aria-label="Yuno — home" onClick={() => setOpen(false)}>
-          <YunoLogo size={32} />
+          <YunoLogo size={36} />
         </Link>
 
         {/* desktop nav */}
