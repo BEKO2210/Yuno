@@ -1,17 +1,33 @@
+import { ScrollVideoBackground } from "@/components/scroll-video-background";
+
 type Props = {
   title: string;
   subtitle: string;
   children?: React.ReactNode;
+  /** optional scroll-scrubbed video background (path under /public) */
+  backgroundVideo?: string;
+  backgroundPoster?: string;
 };
 
 /** Shared header + container for inner pages. */
-export function PageShell({ title, subtitle, children }: Props) {
+export function PageShell({
+  title,
+  subtitle,
+  children,
+  backgroundVideo,
+  backgroundPoster,
+}: Props) {
   return (
-    <div className="mx-auto max-w-7xl px-5 py-20">
-      <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">{title}</h1>
-      <p className="mt-3 max-w-xl text-muted">{subtitle}</p>
-      <div className="mt-12">{children}</div>
-    </div>
+    <>
+      {backgroundVideo && (
+        <ScrollVideoBackground src={backgroundVideo} poster={backgroundPoster} />
+      )}
+      <div className="relative z-10 mx-auto max-w-7xl px-5 py-20">
+        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">{title}</h1>
+        <p className="mt-3 max-w-xl text-muted">{subtitle}</p>
+        <div className="mt-12">{children}</div>
+      </div>
+    </>
   );
 }
 

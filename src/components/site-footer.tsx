@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border">
+    <footer className="relative z-10 border-t border-border bg-background">
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-10 text-sm text-muted md:flex-row md:items-center md:justify-between">
         <p>
           © {new Date().getFullYear()} Yuno — free & open source. Made by Belkis Aslani.

@@ -11,6 +11,8 @@ export default async function WallpapersPage() {
     <PageShell
       title="Wallpapers"
       subtitle="High-resolution backgrounds for phone and desktop. Free to download."
+      backgroundVideo="/video/subpage.mp4"
+      backgroundPoster="/video/subpage.jpg"
     >
       {assets.length === 0 ? (
         <EmptyState label="wallpapers" />

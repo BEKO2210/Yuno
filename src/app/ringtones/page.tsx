@@ -11,6 +11,8 @@ export default async function RingtonesPage() {
     <PageShell
       title="Ringtones"
       subtitle="Stand-out ringtones, from cinematic to minimal. Preview and download."
+      backgroundVideo="/video/subpage.mp4"
+      backgroundPoster="/video/subpage.jpg"
     >
       {assets.length === 0 ? (
         <EmptyState label="ringtones" />

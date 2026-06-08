@@ -11,6 +11,8 @@ export default async function NotificationsPage() {
     <PageShell
       title="Notification Sounds"
       subtitle="Short, clean notification sounds that don't annoy. Preview and download."
+      backgroundVideo="/video/subpage.mp4"
+      backgroundPoster="/video/subpage.jpg"
     >
       {assets.length === 0 ? (
         <EmptyState label="notification sounds" />
