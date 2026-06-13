@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
 type Props = {
   src: string;
@@ -10,21 +10,45 @@ type Props = {
 };
 
 /**
+ * True only on devices where per-frame video seeking is smooth: pointer-fine,
+ * larger screens, motion allowed. Reads a media query without effect-setState
+ * (hydration-safe; assumes "static poster" on the server).
+ */
+const NO_SCRUB_QUERY =
+  "(prefers-reduced-motion: reduce), (hover: none), (pointer: coarse), (max-width: 768px)";
+
+function subscribe(cb: () => void) {
+  const mq = window.matchMedia(NO_SCRUB_QUERY);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+
+function useScrubCapable() {
+  return useSyncExternalStore(
+    subscribe,
+    () => !window.matchMedia(NO_SCRUB_QUERY).matches,
+    () => false,
+  );
+}
+
+/**
  * Full-viewport fixed video whose playback position is driven by scroll:
  * scrolling down scrubs the video forward, scrolling up rewinds it.
- * The video is encoded all-intra so seeking to any frame is instant; we lerp
- * toward the target time each frame for buttery motion. Falls back to a static
- * poster when the user prefers reduced motion.
+ *
+ * Per-frame `currentTime` seeking is buttery on desktop but janky on mobile —
+ * touch browsers can't decode/seek a new frame every scroll tick, which stutters
+ * the whole page. So on touch / small screens (and for reduced-motion users) we
+ * skip scrubbing entirely and show a smooth, static fixed poster instead.
  */
 export function ScrollVideoBackground({ src, poster, overlay = 0.72 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const scrub = useScrubCapable();
 
+  // Scroll-driven scrubbing (desktop only).
   useEffect(() => {
+    if (!scrub) return;
     const video = videoRef.current;
     if (!video) return;
-
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
 
     let raf = 0;
     let target = 0;
@@ -67,20 +91,27 @@ export function ScrollVideoBackground({ src, poster, overlay = 0.72 }: Props) {
       window.removeEventListener("scroll", updateTarget);
       window.removeEventListener("resize", updateTarget);
     };
-  }, []);
+  }, [scrub]);
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
-      <video
-        ref={videoRef}
-        className="h-full w-full object-cover"
-        src={src}
-        poster={poster}
-        muted
-        playsInline
-        preload="auto"
-        tabIndex={-1}
-      />
+      {scrub ? (
+        <video
+          ref={videoRef}
+          className="h-full w-full object-cover"
+          src={src}
+          poster={poster}
+          muted
+          playsInline
+          preload="auto"
+          tabIndex={-1}
+        />
+      ) : (
+        poster && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={poster} alt="" className="h-full w-full object-cover" />
+        )
+      )}
       {/* legibility: darken + vignette so gallery content stays readable */}
       <div
         className="absolute inset-0"

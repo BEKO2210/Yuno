@@ -20,7 +20,7 @@ export function Hero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden px-5"
+      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden px-5 pb-28 pt-6 md:py-0"
     >
       <VideoBackground
         src="/video/hero.mp4"
@@ -35,16 +35,16 @@ export function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="mb-8 flex justify-center"
+          className="mb-7 flex justify-center"
         >
-          <YunoLogo size={76} withWordmark={false} animated />
+          <YunoLogo size={64} withWordmark={false} animated />
         </motion.div>
 
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className="text-balance text-5xl font-semibold leading-[1.05] tracking-tight sm:text-7xl"
+          className="text-balance text-[2.6rem] font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl"
         >
           Wallpapers & sounds,{" "}
           <span className="text-gradient">made to be downloaded.</span>
@@ -54,7 +54,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.25 }}
-          className="mx-auto mt-6 max-w-xl text-pretty text-lg text-muted"
+          className="mx-auto mt-5 max-w-xl text-pretty text-base text-muted sm:mt-6 sm:text-lg"
         >
           A free, open library of high-quality wallpapers, ringtones and
           notification sounds. No paywalls. No clutter. Just download.
@@ -64,27 +64,27 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-10 flex flex-wrap items-center justify-center gap-4"
+          className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:mt-10 sm:flex-row sm:items-center sm:gap-4"
         >
           <Link
             href="/wallpapers"
-            className="rounded-full bg-foreground px-7 py-3 text-sm font-medium text-background transition-transform hover:scale-[1.03]"
+            className="rounded-full bg-foreground px-7 py-3.5 text-sm font-medium text-background transition-transform hover:scale-[1.03] active:scale-95"
           >
             Browse wallpapers
           </Link>
           <Link
             href="/ringtones"
-            className="rounded-full border border-white/20 bg-white/5 px-7 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-white/10"
+            className="rounded-full border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-white/10"
           >
             Explore sounds
           </Link>
         </motion.div>
       </motion.div>
 
-      {/* scroll hint */}
+      {/* scroll hint (hidden on mobile so it never clashes with the tab bar) */}
       <motion.div
         aria-hidden
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-xs uppercase tracking-[0.3em] text-muted"
+        className="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 text-xs uppercase tracking-[0.3em] text-muted md:block"
         animate={{ opacity: [0.3, 1, 0.3], y: [0, 6, 0] }}
         transition={{ duration: 2.2, repeat: Infinity }}
       >
