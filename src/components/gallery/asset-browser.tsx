@@ -10,17 +10,20 @@ type Props = {
   variant: "wallpaper" | "sound";
 };
 
-const CHIP_LIMIT = 18;
+type Sort = "new" | "popular";
+
+const CHIP_LIMIT = 24;
 
 /**
- * Search box + tag filter on top of a wallpaper grid or sound list.
- * Tag chips are the most-used tags first (so 50-tag SEO dumps don't flood the
- * UI); the search box still matches every tag and the title.
+ * App-like browse experience: a sticky search + sort bar, a horizontally
+ * scrollable row of category pills (most-used tags first), and a live result
+ * grid. The search box still matches every tag and the title.
  */
 export function AssetBrowser({ assets, variant }: Props) {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState<string[]>([]);
   const [showAllTags, setShowAllTags] = useState(false);
+  const [sort, setSort] = useState<Sort>("new");
 
   // tag → how many assets use it, sorted by frequency then name
   const rankedTags = useMemo(() => {
@@ -33,14 +36,14 @@ export function AssetBrowser({ assets, variant }: Props) {
     }
     return [...counts.entries()]
       .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-      .map(([tag]) => tag);
+      .map(([tag, count]) => ({ tag, count }));
   }, [assets]);
 
   const visibleTags = showAllTags ? rankedTags : rankedTags.slice(0, CHIP_LIMIT);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return assets.filter((a) => {
+    const list = assets.filter((a) => {
       const matchesQuery =
         !q ||
         a.title.toLowerCase().includes(q) ||
@@ -49,7 +52,12 @@ export function AssetBrowser({ assets, variant }: Props) {
         active.length === 0 || a.tags.some((t) => active.includes(t));
       return matchesQuery && matchesTags;
     });
-  }, [assets, query, active]);
+    return [...list].sort((a, b) =>
+      sort === "popular"
+        ? b.download_count - a.download_count
+        : +new Date(b.created_at) - +new Date(a.created_at),
+    );
+  }, [assets, query, active, sort]);
 
   function toggleTag(tag: string) {
     setActive((prev) =>
@@ -66,59 +74,112 @@ export function AssetBrowser({ assets, variant }: Props) {
 
   return (
     <div>
-      {/* search */}
-      <div className="mb-5 flex items-center gap-3">
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={`Search ${variant === "wallpaper" ? "wallpapers" : "sounds"} & tags…`}
-          className="w-full rounded-full border border-border bg-surface px-5 py-3 text-sm outline-none transition-colors focus:border-accent"
-        />
-        {hasFilters && (
-          <button
-            onClick={clearAll}
-            className="shrink-0 rounded-full border border-border px-4 py-2 text-sm text-muted transition-colors hover:text-foreground"
-          >
-            Clear
-          </button>
-        )}
-      </div>
+      {/* sticky search + sort bar */}
+      <div className="sticky top-16 z-30 -mx-5 mb-5 border-b border-border bg-background/70 px-5 py-3 backdrop-blur-xl">
+        <div className="flex items-center gap-2.5">
+          <div className="relative flex-1">
+            <svg
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden
+            >
+              <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+              <path d="m20 20-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={`Search ${variant === "wallpaper" ? "wallpapers" : "sounds"} & tags…`}
+              className="w-full rounded-full border border-border bg-surface py-3 pl-11 pr-4 text-sm outline-none transition-colors focus:border-accent"
+            />
+          </div>
 
-      {/* tag chips */}
-      {visibleTags.length > 0 && (
-        <div className="mb-8 flex flex-wrap gap-2">
-          {visibleTags.map((tag) => {
-            const on = active.includes(tag);
-            return (
+          {/* sort segmented control */}
+          <div className="hidden shrink-0 rounded-full border border-border bg-surface p-1 sm:flex">
+            {(["new", "popular"] as const).map((s) => (
               <button
-                key={tag}
-                onClick={() => toggleTag(tag)}
-                aria-pressed={on}
-                className={`rounded-full px-3.5 py-1.5 text-xs transition-colors ${
-                  on
-                    ? "bg-foreground text-background"
-                    : "border border-border text-muted hover:text-foreground"
+                key={s}
+                onClick={() => setSort(s)}
+                aria-pressed={sort === s}
+                className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+                  sort === s ? "bg-foreground text-background" : "text-muted hover:text-foreground"
                 }`}
               >
-                #{tag}
+                {s === "new" ? "Newest" : "Popular"}
               </button>
-            );
-          })}
-          {rankedTags.length > CHIP_LIMIT && (
+            ))}
+          </div>
+
+          {hasFilters && (
             <button
-              onClick={() => setShowAllTags((s) => !s)}
-              className="rounded-full px-3.5 py-1.5 text-xs text-accent transition-colors hover:underline"
+              onClick={clearAll}
+              className="shrink-0 rounded-full border border-border px-4 py-2.5 text-sm text-muted transition-colors hover:text-foreground"
             >
-              {showAllTags ? "Show less" : `+${rankedTags.length - CHIP_LIMIT} more`}
+              Clear
             </button>
           )}
+        </div>
+      </div>
+
+      {/* category pills — horizontally scrollable, app-style */}
+      {rankedTags.length > 0 && (
+        <div className="mb-7">
+          <div
+            className={`scroll-x flex gap-2 overflow-x-auto pb-1 ${
+              showAllTags ? "flex-wrap overflow-visible" : "fade-x flex-nowrap"
+            }`}
+          >
+            <button
+              onClick={() => setActive([])}
+              aria-pressed={active.length === 0}
+              className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                active.length === 0
+                  ? "bg-gradient-to-r from-accent to-accent-2 text-background shadow-[0_0_20px_var(--glow)]"
+                  : "border border-border text-muted hover:text-foreground"
+              }`}
+            >
+              All
+            </button>
+            {visibleTags.map(({ tag, count }) => {
+              const on = active.includes(tag);
+              return (
+                <button
+                  key={tag}
+                  onClick={() => toggleTag(tag)}
+                  aria-pressed={on}
+                  className={`flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm transition-all ${
+                    on
+                      ? "bg-gradient-to-r from-accent to-accent-2 text-background shadow-[0_0_20px_var(--glow)]"
+                      : "border border-border text-muted hover:border-white/25 hover:text-foreground"
+                  }`}
+                >
+                  <span>#{tag}</span>
+                  <span className={`text-[11px] ${on ? "text-background/70" : "text-muted/60"}`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+            {rankedTags.length > CHIP_LIMIT && (
+              <button
+                onClick={() => setShowAllTags((s) => !s)}
+                className="shrink-0 rounded-full px-4 py-2 text-sm font-medium text-accent transition-colors hover:underline"
+              >
+                {showAllTags ? "Show less" : `+${rankedTags.length - CHIP_LIMIT} more`}
+              </button>
+            )}
+          </div>
         </div>
       )}
 
       {/* result count */}
       <p className="mb-5 text-sm text-muted">
-        {filtered.length} {filtered.length === 1 ? "result" : "results"}
+        <span className="font-medium text-foreground">{filtered.length}</span>{" "}
+        {filtered.length === 1 ? "result" : "results"}
         {hasFilters && ` of ${assets.length}`}
       </p>
 
