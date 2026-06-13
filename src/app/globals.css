@@ -15,6 +15,11 @@
   --accent: #7c5cff;
   --accent-2: #18d2c4;
   --glow: #7c5cff66;
+
+  /* Per-category accent colours (app-like, like Zedge categories) */
+  --wallpaper: #7c5cff;
+  --ringtone: #18d2c4;
+  --notification: #ff5c93;
 }
 
 @theme inline {
@@ -26,6 +31,9 @@
   --color-border: var(--border);
   --color-accent: var(--accent);
   --color-accent-2: var(--accent-2);
+  --color-wallpaper: var(--wallpaper);
+  --color-ringtone: var(--ringtone);
+  --color-notification: var(--notification);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-space-grotesk);
@@ -62,6 +70,116 @@ body {
   color: transparent;
 }
 
+/* ============================================================
+   App-like UI (Zedge-style) — surfaces, chips, scrollbars
+   ============================================================ */
+
+/* Frosted-glass card surface used across galleries & players */
+.glass {
+  background: linear-gradient(180deg, #ffffff0e 0%, #ffffff05 100%);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Thin, themed scrollbars (incl. horizontal pill rows) */
+.scroll-x {
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff26 transparent;
+}
+.scroll-x::-webkit-scrollbar {
+  height: 6px;
+}
+.scroll-x::-webkit-scrollbar-thumb {
+  background: #ffffff26;
+  border-radius: 9999px;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Fade the right edge of a horizontally-scrolling pill row */
+.fade-x {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 14px,
+    #000 calc(100% - 28px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 14px,
+    #000 calc(100% - 28px),
+    transparent 100%
+  );
+}
+
+/* Live equalizer bars (audio player while playing) */
+@keyframes eq {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+.eq-bar {
+  transform-origin: bottom;
+  animation: eq 0.9s ease-in-out infinite;
+}
+
+/* Soft entrance for grid items without per-item JS */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-rise {
+  animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Range input (audio scrubber) — themed, app-like */
+input[type="range"].scrubber {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: transparent;
+  cursor: pointer;
+}
+input[type="range"].scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 14px;
+  width: 14px;
+  border-radius: 9999px;
+  background: var(--foreground);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: transform 0.15s ease;
+}
+input[type="range"].scrubber::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+input[type="range"].scrubber::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  border: none;
+  border-radius: 9999px;
+  background: var(--foreground);
+}
+
 /* Respektiere Nutzer, die weniger Bewegung wollen */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -72,5 +190,9 @@ body {
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+  .eq-bar {
+    animation: none !important;
+    transform: scaleY(0.6);
   }
 }

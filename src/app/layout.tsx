@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { BottomNav } from "@/components/bottom-nav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,10 +48,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full antialiased`}
 
     >
-      <body className="min-h-full flex flex-col bg-cinematic">
+      <body className="min-h-full flex flex-col bg-cinematic pb-[72px] md:pb-0">
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
+        <BottomNav />
       </body>
     </html>
   );
