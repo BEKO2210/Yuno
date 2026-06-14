@@ -10,6 +10,11 @@
       "name": "Calinou/kenney-interface-sounds (Kenney UI/Interface sounds)",
       "url": "https://github.com/Calinou/kenney-interface-sounds",
       "license": "CC0 1.0 Universal — no attribution required"
+    },
+    {
+      "name": "NASA / Hubble / JWST via Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/",
+      "license": "Public domain (NASA works) — no attribution required. Giant files are auto-downscaled to 3840px via Wikimedia thumbnails."
     }
   ],
   "wallpapers": [
@@ -40,6 +45,118 @@
       "width": 2239,
       "height": 1400,
       "tags": ["palms", "summer", "retro", "minimal", "teal", "vintage"]
+    },
+    {
+      "title": "Pillars of Creation",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Eagle_nebula_pillars.jpg",
+      "width": 2434,
+      "height": 2400,
+      "tags": ["space", "nebula", "hubble", "stars", "dark", "iconic"]
+    },
+    {
+      "title": "Earthrise",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/a8/NASA-Apollo8-Dec24-Earthrise.jpg",
+      "width": 2400,
+      "height": 2400,
+      "tags": ["space", "earth", "moon", "apollo", "nasa"]
+    },
+    {
+      "title": "The Blue Marble",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg",
+      "width": 3000,
+      "height": 3002,
+      "tags": ["space", "earth", "planet", "blue", "nasa"]
+    },
+    {
+      "title": "Saturn at Equinox",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg",
+      "width": 4613,
+      "height": 2233,
+      "tags": ["space", "saturn", "planet", "rings", "cassini", "widescreen"]
+    },
+    {
+      "title": "Pluto in True Color",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Pluto-01_Stern_03_Pluto_Color_TXT.jpg",
+      "width": 8000,
+      "height": 8000,
+      "tags": ["space", "pluto", "planet", "nasa", "new-horizons"]
+    },
+    {
+      "title": "Hubble Ultra Deep Field",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Hubble_ultra_deep_field_high_rez_edit1.jpg",
+      "width": 6200,
+      "height": 6200,
+      "tags": ["space", "galaxies", "deep-field", "hubble", "dark"]
+    },
+    {
+      "title": "Celestial Fireworks",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/1/13/NASA_Unveils_Celestial_Fireworks_as_Official_Hubble_25th_Anniversary_Image.jpg",
+      "width": 8919,
+      "height": 6683,
+      "tags": ["space", "stars", "cluster", "hubble", "nebula"]
+    },
+    {
+      "title": "Antennae Galaxies",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Antennae_galaxies_xl.jpg",
+      "width": 3915,
+      "height": 3885,
+      "tags": ["space", "galaxies", "collision", "hubble"]
+    },
+    {
+      "title": "Crab Nebula",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/00/Crab_Nebula.jpg",
+      "width": 3864,
+      "height": 3864,
+      "tags": ["space", "nebula", "supernova", "hubble", "colorful"]
+    },
+    {
+      "title": "Horsehead Nebula",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/46/Horsehead-Hubble.jpg",
+      "width": 2839,
+      "height": 2065,
+      "tags": ["space", "nebula", "horsehead", "hubble", "dark"]
+    },
+    {
+      "title": "Whirlpool Galaxy",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/d/db/Messier51_sRGB.jpg",
+      "width": 11477,
+      "height": 7965,
+      "tags": ["space", "galaxy", "spiral", "hubble"]
+    },
+    {
+      "title": "Helix Nebula",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/b/b1/NGC7293_%282004%29.jpg",
+      "width": 6145,
+      "height": 6623,
+      "tags": ["space", "nebula", "helix", "hubble", "eye"]
+    },
+    {
+      "title": "Butterfly Nebula",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/1/1c/NGC_6302_Hubble_2009.full.jpg",
+      "width": 3527,
+      "height": 4110,
+      "tags": ["space", "nebula", "butterfly", "hubble", "colorful"]
+    },
+    {
+      "title": "Orion Nebula",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Orion_Nebula_-_Hubble_2006_mosaic_18000.jpg",
+      "width": 18000,
+      "height": 18000,
+      "tags": ["space", "nebula", "orion", "hubble"]
+    },
+    {
+      "title": "Sombrero Galaxy",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/5/54/Sombrero_Galaxy.jpg",
+      "width": 3108,
+      "height": 2250,
+      "tags": ["space", "galaxy", "sombrero", "hubble"]
+    },
+    {
+      "title": "Webb's First Deep Field",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Webb%27s_First_Deep_Field.jpg",
+      "width": 4537,
+      "height": 4630,
+      "tags": ["space", "galaxies", "deep-field", "webb", "jwst"]
     }
   ],
   "notifications": [

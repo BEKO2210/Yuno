@@ -91,20 +91,53 @@ function extOf(url) {
   return m ? m[1].toLowerCase() : "";
 }
 
+const MAX_IMAGE_WIDTH = 3840; // cap wallpapers at 4K-wide to keep files sane
+
+/**
+ * For oversized Wikimedia Commons originals, swap to the on-the-fly thumbnail
+ * (e.g. .../commons/a/b/Foo.jpg -> .../commons/thumb/a/b/Foo.jpg/3840px-Foo.jpg)
+ * and scale the stored dimensions to match. Other URLs pass through untouched.
+ */
+function maybeDownscale(item) {
+  const { url, width, height } = item;
+  const isCommons =
+    url.startsWith("https://upload.wikimedia.org/wikipedia/commons/") &&
+    !url.includes("/commons/thumb/");
+  if (!isCommons || !width || width <= MAX_IMAGE_WIDTH) return item;
+
+  const base = url.substring(url.lastIndexOf("/") + 1);
+  const rel = url.replace(
+    "https://upload.wikimedia.org/wikipedia/commons/",
+    "",
+  );
+  const thumbUrl =
+    `https://upload.wikimedia.org/wikipedia/commons/thumb/${rel}` +
+    `/${MAX_IMAGE_WIDTH}px-${base}`;
+  const ratio = MAX_IMAGE_WIDTH / width;
+  return {
+    ...item,
+    url: thumbUrl,
+    width: MAX_IMAGE_WIDTH,
+    height: height ? Math.round(height * ratio) : null,
+  };
+}
+
 /** Build the full list of assets to import from the manifest. */
 function buildItems() {
   const items = [];
 
   for (const w of manifest.wallpapers ?? []) {
-    items.push({
-      kind: "wallpaper",
-      bucket: "wallpapers",
-      title: w.title,
-      url: w.url,
-      tags: w.tags ?? [],
-      width: w.width ?? null,
-      height: w.height ?? null,
-    });
+    items.push(
+      maybeDownscale({
+        kind: "wallpaper",
+        bucket: "wallpapers",
+        title: w.title,
+        url: w.url,
+        tags: w.tags ?? [],
+        width: w.width ?? null,
+        height: w.height ?? null,
+      }),
+    );
   }
 
   const soundBase = manifest.notificationsBaseUrl ?? "";
@@ -189,6 +222,8 @@ async function main() {
       "(all public-domain / no attribution required)\n",
   );
 
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
   let added = 0,
     skipped = 0,
     failed = 0;
@@ -201,6 +236,7 @@ async function main() {
       failed++;
       console.error(`  ✗ failed        ${item.title}: ${e.message}`);
     }
+    if (!DRY_RUN) await sleep(300); // be polite to the source hosts
   }
 
   console.log(

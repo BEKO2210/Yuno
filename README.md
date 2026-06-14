@@ -54,10 +54,14 @@ npm run dev                  # http://localhost:3000
 To fill the library with **legally clean** content, the repo ships a curated set
 of **CC0 / public-domain** assets — free for any use **without attribution**:
 
-- **Wallpapers** — from
-  [`nodiscc/cc0-wallpapers`](https://github.com/nodiscc/cc0-wallpapers)
-  (Unsplash, CC0).
-- **Notification sounds** — from
+- **Wallpapers (20)**
+  - 4 CC0 nature shots from
+    [`nodiscc/cc0-wallpapers`](https://github.com/nodiscc/cc0-wallpapers)
+    (Unsplash, CC0).
+  - 16 **public-domain NASA / Hubble / JWST** space images via Wikimedia
+    Commons (verified `Public domain`; giant files are auto-downscaled to 3840px
+    using Wikimedia thumbnails).
+- **Notification sounds (16)** — from
   [`Calinou/kenney-interface-sounds`](https://github.com/Calinou/kenney-interface-sounds)
   (Kenney UI sounds, **CC0 1.0 Universal**).
 
@@ -77,9 +81,11 @@ inserts the row with tags. Re-running is safe — existing files are skipped.
 
 > ⚠️ **Only add content you have the right to redistribute.** Many GitHub
 > "wallpaper" repos have **no license** (or contain third-party copyrighted art
-> like anime/movies/games) — those **cannot** be re-hosted here. Stick to CC0 /
-> public-domain or sources whose license allows redistribution without
-> attribution (e.g. Unsplash, Pexels).
+> like anime/movies/games) — those **cannot** be re-hosted here. Note also that
+> the **Unsplash and Pexels licenses forbid using their photos to build a
+> competing/similar service** — which a wallpaper-download site arguably is — so
+> they are intentionally avoided. Stick to **CC0 / public-domain** (e.g. NASA,
+> Wikimedia PD), which carries no such restriction.
 
 ## Supabase setup
 
