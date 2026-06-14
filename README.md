@@ -46,6 +46,46 @@ npm run dev                  # http://localhost:3000
 | `npm run build` | Production build                     |
 | `npm run start` | Run the production build locally     |
 | `npm run lint`  | Lint with ESLint                     |
+| `npm run seed`  | Import curated CC0 starter assets (needs service key) |
+| `npm run seed:dry` | Preview what the seed would import (no credentials) |
+
+## Seeding free starter content (CC0)
+
+To fill the library with **legally clean** content, the repo ships a curated set
+of **CC0 / public-domain** assets — free for any use **without attribution**:
+
+- **Wallpapers (20)**
+  - 4 CC0 nature shots from
+    [`nodiscc/cc0-wallpapers`](https://github.com/nodiscc/cc0-wallpapers)
+    (Unsplash, CC0).
+  - 16 **public-domain NASA / Hubble / JWST** space images via Wikimedia
+    Commons (verified `Public domain`; giant files are auto-downscaled to 3840px
+    using Wikimedia thumbnails).
+- **Notification sounds (16)** — from
+  [`Calinou/kenney-interface-sounds`](https://github.com/Calinou/kenney-interface-sounds)
+  (Kenney UI sounds, **CC0 1.0 Universal**).
+
+The list lives in [`scripts/seed-manifest.json`](./scripts/seed-manifest.json)
+(title + tags per item). To import:
+
+```bash
+# preview (no credentials needed)
+npm run seed:dry
+
+# real import — needs the service-role key (Supabase → Settings → API)
+SUPABASE_SERVICE_ROLE_KEY=... npm run seed   # or put it in .env.local
+```
+
+The script downloads each file, uploads it to the right Storage bucket, and
+inserts the row with tags. Re-running is safe — existing files are skipped.
+
+> ⚠️ **Only add content you have the right to redistribute.** Many GitHub
+> "wallpaper" repos have **no license** (or contain third-party copyrighted art
+> like anime/movies/games) — those **cannot** be re-hosted here. Note also that
+> the **Unsplash and Pexels licenses forbid using their photos to build a
+> competing/similar service** — which a wallpaper-download site arguably is — so
+> they are intentionally avoided. Stick to **CC0 / public-domain** (e.g. NASA,
+> Wikimedia PD), which carries no such restriction.
 
 ## Supabase setup
 

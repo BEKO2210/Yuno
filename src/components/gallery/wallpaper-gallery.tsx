@@ -14,20 +14,26 @@ function formatCount(n: number): string {
 }
 
 export function WallpaperGallery({ assets }: { assets: Asset[] }) {
-  const [active, setActive] = useState<Asset | null>(null);
+  const [idx, setIdx] = useState<number | null>(null);
+  const active = idx == null ? null : assets[idx];
 
-  // lock scroll + allow Esc to close while the lightbox is open
+  // lock scroll + arrow/Esc keyboard nav while the lightbox is open
   useEffect(() => {
-    if (!active) return;
+    if (idx == null) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setActive(null);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIdx(null);
+      if (e.key === "ArrowRight") setIdx((i) => (i == null ? i : (i + 1) % assets.length));
+      if (e.key === "ArrowLeft")
+        setIdx((i) => (i == null ? i : (i - 1 + assets.length) % assets.length));
+    };
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
-  }, [active]);
+  }, [idx, assets.length]);
 
   return (
     <>
@@ -38,7 +44,7 @@ export function WallpaperGallery({ assets }: { assets: Asset[] }) {
           return (
             <button
               key={a.id}
-              onClick={() => setActive(a)}
+              onClick={() => setIdx(i)}
               className="animate-rise group relative block w-full break-inside-avoid overflow-hidden rounded-2xl border border-border bg-surface text-left transition-colors hover:border-white/25"
               style={{ animationDelay: `${Math.min(i, 16) * 30}ms` }}
             >
@@ -89,7 +95,7 @@ export function WallpaperGallery({ assets }: { assets: Asset[] }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setActive(null)}
+            onClick={() => setIdx(null)}
           >
             <div className="absolute inset-0 bg-background/85 backdrop-blur-xl" />
             <motion.div
@@ -151,7 +157,7 @@ export function WallpaperGallery({ assets }: { assets: Asset[] }) {
               </div>
 
               <button
-                onClick={() => setActive(null)}
+                onClick={() => setIdx(null)}
                 aria-label="Close"
                 className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-background/60 text-foreground backdrop-blur-sm transition-colors hover:bg-background/90"
               >
@@ -165,6 +171,39 @@ export function WallpaperGallery({ assets }: { assets: Asset[] }) {
                 </svg>
               </button>
             </motion.div>
+
+            {/* prev / next */}
+            {assets.length > 1 && (
+              <>
+                <button
+                  aria-label="Previous"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIdx((i) => (i == null ? i : (i - 1 + assets.length) % assets.length));
+                  }}
+                  className="absolute left-3 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-background/60 text-foreground backdrop-blur-sm transition-colors hover:bg-background/90 sm:left-6"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path d="m15 6-6 6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <button
+                  aria-label="Next"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIdx((i) => (i == null ? i : (i + 1) % assets.length));
+                  }}
+                  className="absolute right-3 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-background/60 text-foreground backdrop-blur-sm transition-colors hover:bg-background/90 sm:right-6"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path d="m9 6 6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <span className="absolute left-1/2 top-4 z-20 -translate-x-1/2 rounded-full bg-background/60 px-3 py-1 font-mono text-xs text-muted backdrop-blur-sm">
+                  {idx! + 1} / {assets.length}
+                </span>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
