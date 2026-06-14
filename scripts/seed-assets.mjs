@@ -164,6 +164,26 @@ function buildItems() {
   return items;
 }
 
+// Wikimedia (and good etiquette) require a descriptive User-Agent; requests
+// without one get aggressively rate-limited (429). We also retry with backoff.
+const USER_AGENT =
+  "Yuno-asset-seeder/1.0 (https://github.com/BEKO2210/Yuno; belkis.aslani@gmail.com)";
+
+async function download(url, attempt = 0) {
+  const res = await fetch(url, {
+    headers: { "User-Agent": USER_AGENT, Accept: "*/*" },
+    redirect: "follow",
+  });
+  if ((res.status === 429 || res.status === 503) && attempt < 5) {
+    const waitMs = 2000 * 2 ** attempt; // 2s, 4s, 8s, 16s, 32s
+    console.log(`    …${res.status} rate-limited, retry in ${waitMs / 1000}s`);
+    await new Promise((r) => setTimeout(r, waitMs));
+    return download(url, attempt + 1);
+  }
+  if (!res.ok) throw new Error(`download ${res.status} for ${url}`);
+  return Buffer.from(await res.arrayBuffer());
+}
+
 async function rowExists(filePath) {
   const { data, error } = await supabase
     .from("assets")
@@ -188,9 +208,7 @@ async function importItem(item) {
     return "skipped";
   }
 
-  const res = await fetch(item.url);
-  if (!res.ok) throw new Error(`download ${res.status} for ${item.url}`);
-  const buffer = Buffer.from(await res.arrayBuffer());
+  const buffer = await download(item.url);
 
   const { error: upErr } = await supabase.storage
     .from(item.bucket)
@@ -236,7 +254,7 @@ async function main() {
       failed++;
       console.error(`  ✗ failed        ${item.title}: ${e.message}`);
     }
-    if (!DRY_RUN) await sleep(300); // be polite to the source hosts
+    if (!DRY_RUN) await sleep(800); // be polite to the source hosts
   }
 
   console.log(
