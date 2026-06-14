@@ -2,12 +2,15 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { playExclusive, releaseAudio } from "@/lib/audio-manager";
+import { setNowPlaying, clearNowPlaying } from "@/lib/now-playing";
 import { waveformFor } from "@/lib/assets";
 
 type Props = {
   src: string;
-  /** seed for the deterministic waveform (usually the asset id/title) */
-  seed: string;
+  /** unique id (drives now-playing ownership + waveform seed) */
+  id: string;
+  /** track title for the mini-player bar */
+  title: string;
   /** themed accent colour (CSS value) */
   accent: string;
   /** known duration in seconds, if any (used until metadata loads) */
@@ -24,22 +27,41 @@ function fmt(sec: number): string {
 /**
  * Custom, app-style audio player: round play/pause control, a clickable
  * waveform that doubles as a scrubber, live equalizer motion while playing,
- * and a current/total time read-out. Only one player plays at a time.
+ * and a current/total time read-out. Only one player plays at a time, and the
+ * active track is mirrored to the global now-playing bar.
  */
-export function AudioPlayer({ src, seed, accent, duration }: Props) {
+export function AudioPlayer({ src, id, title, accent, duration }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [time, setTime] = useState(0);
   const [total, setTotal] = useState(duration ?? 0);
   const [ready, setReady] = useState(false);
 
-  const bars = useMemo(() => waveformFor(seed, 56), [seed]);
+  const bars = useMemo(() => waveformFor(id + title, 56), [id, title]);
   const progress = total > 0 ? time / total : 0;
 
   useEffect(() => {
     const el = audioRef.current;
     if (!el) return;
-    const onTime = () => setTime(el.currentTime);
+
+    const publishControls = () => ({
+      toggle: () => {
+        if (el.paused) void el.play();
+        else el.pause();
+      },
+      seek: (seconds: number) => {
+        el.currentTime = seconds;
+      },
+      stop: () => {
+        el.pause();
+        el.currentTime = 0;
+      },
+    });
+
+    const onTime = () => {
+      setTime(el.currentTime);
+      setNowPlaying({ time: el.currentTime });
+    };
     const onMeta = () => {
       setTotal(el.duration);
       setReady(true);
@@ -47,13 +69,22 @@ export function AudioPlayer({ src, seed, accent, duration }: Props) {
     const onPlay = () => {
       playExclusive(el);
       setPlaying(true);
+      setNowPlaying(
+        { id, title, accent, playing: true, time: el.currentTime, duration: el.duration || total },
+        publishControls(),
+      );
     };
-    const onPause = () => setPlaying(false);
+    const onPause = () => {
+      setPlaying(false);
+      setNowPlaying({ playing: false });
+    };
     const onEnd = () => {
       setPlaying(false);
       setTime(0);
       el.currentTime = 0;
+      setNowPlaying({ playing: false, time: 0 });
     };
+
     el.addEventListener("timeupdate", onTime);
     el.addEventListener("loadedmetadata", onMeta);
     el.addEventListener("play", onPlay);
@@ -66,8 +97,10 @@ export function AudioPlayer({ src, seed, accent, duration }: Props) {
       el.removeEventListener("pause", onPause);
       el.removeEventListener("ended", onEnd);
       releaseAudio(el);
+      clearNowPlaying(id);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, title, accent]);
 
   function toggle() {
     const el = audioRef.current;

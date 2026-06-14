@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { downloadUrl, publicUrl } from "@/lib/assets";
+import { FadeImg } from "@/components/fade-img";
 import { DownloadButton } from "@/components/download-button";
 import type { Asset } from "@/lib/types";
 
@@ -48,12 +49,11 @@ export function WallpaperGallery({ assets }: { assets: Asset[] }) {
               className="animate-rise group relative block w-full break-inside-avoid overflow-hidden rounded-2xl border border-border bg-surface text-left transition-colors hover:border-white/25"
               style={{ animationDelay: `${Math.min(i, 16) * 30}ms` }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <FadeImg
                 src={src}
                 alt={a.title}
                 loading="lazy"
-                className="w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                className="w-full object-cover group-hover:scale-[1.06]"
               />
               <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-background/95 via-background/25 to-transparent p-3.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 <p className="truncate text-sm font-medium">{a.title}</p>
@@ -107,8 +107,7 @@ export function WallpaperGallery({ assets }: { assets: Asset[] }) {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex min-h-0 flex-1 items-center justify-center bg-black/40 p-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <FadeImg
                   src={publicUrl(SUPABASE_URL, "wallpapers", active.file_path)}
                   alt={active.title}
                   className="max-h-[60vh] w-auto max-w-full rounded-xl object-contain md:max-h-[82vh]"

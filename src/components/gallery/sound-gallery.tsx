@@ -87,7 +87,7 @@ export function SoundGallery({ assets }: { assets: Asset[] }) {
               </DownloadButton>
             </div>
 
-            <AudioPlayer src={src} seed={a.id + a.title} accent={accent} duration={a.duration} />
+            <AudioPlayer src={src} id={a.id} title={a.title} accent={accent} duration={a.duration} />
 
             {a.tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5">

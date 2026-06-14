@@ -4,6 +4,8 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BottomNav } from "@/components/bottom-nav";
+import { NowPlayingBar } from "@/components/now-playing-bar";
+import { ScrollProgress } from "@/components/scroll-progress";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,9 +51,11 @@ export default function RootLayout({
 
     >
       <body className="min-h-full flex flex-col bg-cinematic pb-[72px] md:pb-0">
+        <ScrollProgress />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
+        <NowPlayingBar />
         <BottomNav />
       </body>
     </html>
