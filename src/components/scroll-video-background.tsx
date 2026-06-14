@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useReducedMotion } from "framer-motion";
 
 type Props = {
   src: string;
@@ -32,17 +33,18 @@ function useScrubCapable() {
 }
 
 /**
- * Full-viewport fixed video whose playback position is driven by scroll:
- * scrolling down scrubs the video forward, scrolling up rewinds it.
+ * Full-viewport fixed cinematic video background.
  *
- * Per-frame `currentTime` seeking is buttery on desktop but janky on mobile —
- * touch browsers can't decode/seek a new frame every scroll tick, which stutters
- * the whole page. So on touch / small screens (and for reduced-motion users) we
- * skip scrubbing entirely and show a smooth, static fixed poster instead.
+ * On desktop (pointer-fine, large screens, motion allowed) playback is scrubbed
+ * by scroll — scrolling scrubs the clip forward/back for a cinematic effect.
+ * On touch / small screens, per-frame `currentTime` seeking is janky, so the
+ * video simply **autoplays on a loop** instead: it keeps running smoothly
+ * without stuttering the page. Reduced-motion users get a still poster.
  */
 export function ScrollVideoBackground({ src, poster, overlay = 0.72 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const scrub = useScrubCapable();
+  const reduce = useReducedMotion();
 
   // Scroll-driven scrubbing (desktop only).
   useEffect(() => {
@@ -95,7 +97,13 @@ export function ScrollVideoBackground({ src, poster, overlay = 0.72 }: Props) {
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
-      {scrub ? (
+      {reduce ? (
+        poster && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={poster} alt="" className="h-full w-full object-cover" />
+        )
+      ) : scrub ? (
+        // desktop: playback position scrubbed by scroll
         <video
           ref={videoRef}
           className="h-full w-full object-cover"
@@ -107,10 +115,18 @@ export function ScrollVideoBackground({ src, poster, overlay = 0.72 }: Props) {
           tabIndex={-1}
         />
       ) : (
-        poster && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={poster} alt="" className="h-full w-full object-cover" />
-        )
+        // mobile/touch: just let it play on a loop — smooth, no scroll seeking
+        <video
+          className="h-full w-full object-cover"
+          src={src}
+          poster={poster}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          tabIndex={-1}
+        />
       )}
       {/* legibility: darken + vignette so gallery content stays readable */}
       <div
