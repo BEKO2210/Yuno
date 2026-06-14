@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "node scripts/seed-assets.mjs",
+    "seed:dry": "node scripts/seed-assets.mjs --dry-run"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",

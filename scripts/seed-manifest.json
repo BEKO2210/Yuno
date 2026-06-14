@@ -1,0 +1,64 @@
+{
+  "_about": "Curated, license-clean assets for Yuno. Every entry is CC0 / public-domain — free for any use WITHOUT attribution. Run `node scripts/seed-assets.mjs` (needs SUPABASE_SERVICE_ROLE_KEY) to download each file, upload it to the right Supabase Storage bucket, and create the matching row in public.assets. Re-running is safe (existing files are skipped).",
+  "sources": [
+    {
+      "name": "nodiscc/cc0-wallpapers",
+      "url": "https://github.com/nodiscc/cc0-wallpapers",
+      "license": "CC0 1.0 (Unsplash, public domain) — no attribution required"
+    },
+    {
+      "name": "Calinou/kenney-interface-sounds (Kenney UI/Interface sounds)",
+      "url": "https://github.com/Calinou/kenney-interface-sounds",
+      "license": "CC0 1.0 Universal — no attribution required"
+    }
+  ],
+  "wallpapers": [
+    {
+      "title": "Stargazers at Dusk",
+      "url": "https://raw.githubusercontent.com/nodiscc/cc0-wallpapers/master/unsplash1.jpg",
+      "width": 3840,
+      "height": 2560,
+      "tags": ["night", "stars", "sunset", "silhouette", "nature", "dark", "4k"]
+    },
+    {
+      "title": "Lonely Road from Above",
+      "url": "https://raw.githubusercontent.com/nodiscc/cc0-wallpapers/master/unsplash7.jpg",
+      "width": 3710,
+      "height": 2781,
+      "tags": ["aerial", "drone", "road", "nature", "green", "minimal", "4k"]
+    },
+    {
+      "title": "Forest Night Sky",
+      "url": "https://raw.githubusercontent.com/nodiscc/cc0-wallpapers/master/unsplash10.jpg",
+      "width": 3840,
+      "height": 2267,
+      "tags": ["night", "stars", "milky-way", "forest", "blue", "dark", "4k"]
+    },
+    {
+      "title": "Retro Palms",
+      "url": "https://raw.githubusercontent.com/nodiscc/cc0-wallpapers/master/unsplash11.jpg",
+      "width": 2239,
+      "height": 1400,
+      "tags": ["palms", "summer", "retro", "minimal", "teal", "vintage"]
+    }
+  ],
+  "notifications": [
+    { "title": "Confirmation Chime", "file": "confirmation_001.wav", "tags": ["notification", "ui", "confirm", "chime", "clean"] },
+    { "title": "Confirmation Soft", "file": "confirmation_002.wav", "tags": ["notification", "ui", "confirm", "soft", "clean"] },
+    { "title": "Confirmation Bright", "file": "confirmation_003.wav", "tags": ["notification", "ui", "confirm", "bright"] },
+    { "title": "Gentle Question", "file": "question_001.wav", "tags": ["notification", "ui", "ping", "gentle"] },
+    { "title": "Question Ping", "file": "question_002.wav", "tags": ["notification", "ui", "ping", "alert"] },
+    { "title": "Soft Bong", "file": "bong_001.wav", "tags": ["notification", "bong", "mellow", "soft"] },
+    { "title": "Glass Tap", "file": "glass_001.wav", "tags": ["notification", "glass", "crisp", "clean"] },
+    { "title": "Glass Ding", "file": "glass_002.wav", "tags": ["notification", "glass", "crisp", "bright"] },
+    { "title": "Glass Shimmer", "file": "glass_003.wav", "tags": ["notification", "glass", "shimmer", "clean"] },
+    { "title": "Pluck", "file": "pluck_001.wav", "tags": ["notification", "pluck", "string", "subtle"] },
+    { "title": "Pluck High", "file": "pluck_002.wav", "tags": ["notification", "pluck", "string", "bright"] },
+    { "title": "Select Blip", "file": "select_001.wav", "tags": ["notification", "ui", "blip", "minimal"] },
+    { "title": "Select Tone", "file": "select_002.wav", "tags": ["notification", "ui", "tone", "minimal"] },
+    { "title": "Switch", "file": "switch_001.wav", "tags": ["notification", "ui", "switch", "tactile"] },
+    { "title": "Toggle", "file": "toggle_001.wav", "tags": ["notification", "ui", "toggle", "tactile"] },
+    { "title": "Tick", "file": "tick_001.wav", "tags": ["notification", "ui", "tick", "subtle"] }
+  ],
+  "notificationsBaseUrl": "https://raw.githubusercontent.com/Calinou/kenney-interface-sounds/master/addons/kenney_interface_sounds/"
+}
