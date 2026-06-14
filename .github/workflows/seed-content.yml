@@ -1,0 +1,31 @@
+name: Seed CC0 content
+
+# Manually triggered (no PC needed — run it from the GitHub website/app:
+# Actions → "Seed CC0 content" → Run workflow).
+#
+# Requires ONE repository secret:
+#   SUPABASE_SERVICE_ROLE_KEY  (Supabase → Settings → API → service_role)
+# The Supabase URL is public, so it is set inline below.
+on:
+  workflow_dispatch:
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Import curated CC0 / public-domain assets
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://tzwcnjvciykvusunxzzl.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "::error::Missing secret SUPABASE_SERVICE_ROLE_KEY."
+            echo "Add it under Settings → Secrets and variables → Actions, then re-run."
+            exit 1
+          fi
+          npm run seed
